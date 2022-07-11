@@ -18,7 +18,7 @@ func main() {
 
 	start := time.Now()
 	limit := New(concurrency) // New Limit 控制并发量
-	max := 65683174
+	max := 65802725
 
 	ctx := context.TODO()
 	cfg, err := OpenConfigFile()
@@ -27,13 +27,13 @@ func main() {
 	}
 	cl := initializeMongo(cfg, ctx)
 
-	for i := 65683173; i < max; i++ {
+	for i := 65802724; i < max; i++ {
 		wg.Add(1)
 		value := i
 		goFunc := func() {
 			fmt.Printf("start func: %d\n", value)
 			// 配置请求参数,方法内部已处理urlencode问题,中文参数可以直接传参
-			blockMessage, err := getBlockMessage(ctx, i, cl)
+			blockMessage, err := getBlockMessage(ctx, value, cl)
 			if err != nil {
 				log.Println(err)
 			}
