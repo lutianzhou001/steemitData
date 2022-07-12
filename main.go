@@ -27,7 +27,7 @@ func main() {
 	}
 	cl := initializeMongo(cfg, ctx)
 
-	for i := 65802724; i < max; i++ {
+	for i := 1; i < max; i++ {
 		wg.Add(1)
 		value := i
 		goFunc := func() {
@@ -78,7 +78,7 @@ func (limit *Limit) Run(f func()) {
 var wg = sync.WaitGroup{}
 
 const (
-	concurrency = 1 // 控制并发量
+	concurrency = 10 // 控制并发量
 )
 
 func initializeMongo(cfg Config, ctx context.Context) *mongo.Client {

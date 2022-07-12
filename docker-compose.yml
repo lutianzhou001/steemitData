@@ -1,0 +1,39 @@
+version: "3.3"
+services:
+  steemit:
+    build:
+      context: "./"
+    container_name: steemit_staging
+    networks:
+      - network
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo
+    restart: always
+    container_name: mongo_staging
+    networks:
+      - network
+    ports:
+      - "27017:27017"
+    expose:
+      - "27017"
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    container_name: mongo_express_staging
+    ports:
+      - "8081:8081"
+    networks:
+      - network
+    environment:
+      ME_CONFIG_BASICAUTH_USERNAME: _lobster_finance_admin
+      ME_CONFIG_BASICAUTH_PASSWORD: _lobster_finance_password
+    depends_on:
+      - mongo
+
+networks:
+  network:
+
