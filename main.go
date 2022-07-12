@@ -78,7 +78,7 @@ func (limit *Limit) Run(f func()) {
 var wg = sync.WaitGroup{}
 
 const (
-	concurrency = 10 // 控制并发量
+	concurrency = 420 // 控制并发量
 )
 
 func initializeMongo(cfg Config, ctx context.Context) *mongo.Client {
