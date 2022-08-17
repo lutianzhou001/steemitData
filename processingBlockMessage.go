@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -15,6 +16,7 @@ func processingBlockMessage(ctx context.Context, block map[string]interface{}, c
 				for _, operation := range operations {
 					if operation.(map[string]interface{})["type"] == "vote_operation" {
 						value := operation.(map[string]interface{})["value"].(map[string]interface{})
+						value["timestamp"] = block["timestamp"]
 						if value != nil {
 							b, err := json.Marshal(value)
 							if err != nil {
@@ -30,6 +32,8 @@ func processingBlockMessage(ctx context.Context, block map[string]interface{}, c
 						// fmt.Println(value)
 						if value != nil {
 							if value["parent_author"] == "" {
+								value["timestamp"] = block["timestamp"]
+								value["body"] = ""
 								b, err := json.Marshal(value)
 								if err != nil {
 									return err
@@ -39,14 +43,30 @@ func processingBlockMessage(ctx context.Context, block map[string]interface{}, c
 									return err
 								}
 							} else {
-								b, err := json.Marshal(value)
-								if err != nil {
-									return err
-								}
-								err = insertInMongo(ctx, b, cl, 0, "comment")
-								if err != nil {
-									return err
-								}
+								continue
+								//value["timestamp"] = block["timestamp"]
+								//b, err := json.Marshal(value)
+								//if err != nil {
+								//	return err
+								//}
+								//err = insertInMongo(ctx, b, cl, 0, "comment")
+								//if err != nil {
+								//	return err
+								//}
+							}
+						}
+					} else {
+						value := operation.(map[string]interface{})["value"].(map[string]interface{})
+						if value != nil {
+							collection := fmt.Sprint(operation.(map[string]interface{})["type"])
+							value["timestamp"] = block["timestamp"]
+							b, err := json.Marshal(value)
+							if err != nil {
+								return err
+							}
+							err = insertInMongo(ctx, b, cl, 0, collection)
+							if err != nil {
+								return err
 							}
 						}
 					}

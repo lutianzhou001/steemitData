@@ -56,16 +56,10 @@ func getBlockMessage(ctx context.Context, id int, cl *mongo.Client) (map[string]
 		return nil, err
 	}
 
-	converted, convertedMap, err := convertBodyToBlockMessage(body)
+	_, convertedMap, err := convertBodyToBlockMessage(body)
 	if err != nil {
 		return nil, err
 	}
 
-	if converted != nil {
-		err = insertInMongo(ctx, converted, cl, id, "block")
-		if err != nil {
-			return nil, err
-		}
-	}
 	return convertedMap, nil
 }
